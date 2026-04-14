@@ -2,7 +2,7 @@
   "name": "marslib-vscode",
   "displayName": "MARSLib Extension",
   "description": "Official VS Code extension for the MARSLib robotics framework.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "mars2614",
   "icon": "resources/mars-logo.png",
   "repository": {
@@ -101,6 +101,26 @@
           "group": "navigation"
         }
       ]
+    },
+    "configuration": {
+      "title": "MARSLib",
+      "properties": {
+        "marslib.teamNumber": {
+          "type": "number",
+          "default": 2614,
+          "description": "FRC team number. Used to derive the RoboRIO mDNS address (roborio-XXXX-frc.local)."
+        },
+        "marslib.rioAddress": {
+          "type": "string",
+          "default": "",
+          "description": "Override the RoboRIO address. Leave empty to auto-derive from team number."
+        },
+        "marslib.projectDoctor.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable real-time Elite Coding Standards linting in the Problems panel."
+        }
+      }
     },
     "snippets": [
       {
