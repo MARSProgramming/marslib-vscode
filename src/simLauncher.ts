@@ -8,7 +8,7 @@ import * as vscode from 'vscode';
  */
 export class SimLauncher {
     private simToggle: vscode.StatusBarItem;
-    private isSimMode: boolean = false;
+    private isSimMode = false;
 
     constructor() {
         this.simToggle = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 98);

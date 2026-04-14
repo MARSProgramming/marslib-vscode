@@ -246,7 +246,8 @@ export class CANBusVisualizer {
             display: flex; align-items: center; justify-content: center;
             font-weight: 800; font-size: 1rem; color: white; flex-shrink: 0;
         }
-        .device-name { font-weight: 600; font-size: 0.85rem; }
+        .device-info { flex: 1; min-width: 0; overflow: hidden; }
+        .device-name { font-weight: 600; font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .device-type { font-size: 0.7rem; color: #666; margin-top: 2px; }
         .conflict-badge { font-size: 0.65rem; color: #FF3B3B; margin-top: 4px; font-weight: 600; }
         .stats { display: flex; gap: 24px; margin-bottom: 24px; }

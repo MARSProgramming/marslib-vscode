@@ -9,7 +9,9 @@ export class CANIdManager implements vscode.TreeDataProvider<CANItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<CANItem | undefined | void> = new vscode.EventEmitter<CANItem | undefined | void>();
     readonly onDidChangeTreeData: vscode.Event<CANItem | undefined | void> = this._onDidChangeTreeData.event;
 
-    constructor() {}
+    constructor() {
+        // Initialization if needed
+    }
 
     refresh(): void {
         this._onDidChangeTreeData.fire();

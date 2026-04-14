@@ -11,7 +11,7 @@ import { exec } from 'child_process';
 export class MARSStatusBar {
     private connectionStatus: vscode.StatusBarItem;
     private gitSyncStatus: vscode.StatusBarItem;
-    private isDisposed: boolean = false;
+    private isDisposed = false;
 
     constructor() {
         this.connectionStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);

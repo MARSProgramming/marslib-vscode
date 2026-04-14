@@ -11,9 +11,9 @@ import { exec } from 'child_process';
  * Uses a cooldown to prevent spamming builds on rapid saves.
  */
 export class BuildConstantsDaemon {
-    private lastRunTime: number = 0;
+    private lastRunTime = 0;
     private readonly COOLDOWN_MS = 15000; // 15s cooldown to prevent build spam
-    private isRunning: boolean = false;
+    private isRunning = false;
 
     constructor(context: vscode.ExtensionContext) {
         const watcher = vscode.workspace.onDidSaveTextDocument((document) => {

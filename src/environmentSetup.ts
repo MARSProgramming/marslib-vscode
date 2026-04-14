@@ -87,7 +87,7 @@ const MAX_REDIRECTS = 5;
  * Downloads a file via HTTPS with proper redirect following.
  * Handles GitHub's redirect chains (raw.githubusercontent.com → CDN).
  */
-async function downloadFile(url: string, dest: string, redirectCount: number = 0): Promise<void> {
+async function downloadFile(url: string, dest: string, redirectCount = 0): Promise<void> {
     if (redirectCount > MAX_REDIRECTS) {
         throw new Error(`Too many redirects (>${MAX_REDIRECTS}) for ${url}`);
     }
