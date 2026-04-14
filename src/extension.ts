@@ -70,85 +70,116 @@ class MarslibActionProvider implements vscode.TreeDataProvider<vscode.TreeItem> 
 }
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('MARSLib VS Code extension is now active!');
+    try {
+        console.log('MARSLib VS Code extension is now active!');
 
-    const actionProvider = new MarslibActionProvider();
-    vscode.window.registerTreeDataProvider('marslib-actions', actionProvider);
+        const actionProvider = new MarslibActionProvider();
+        context.subscriptions.push(
+            vscode.window.registerTreeDataProvider('marslib-actions', actionProvider)
+        );
 
-    const buildDisposable = vscode.commands.registerCommand('marslib.build', () => {
-        runGradlewCommand('build', 'MARSLib: Build');
-    });
+        const buildDisposable = vscode.commands.registerCommand('marslib.build', () => {
+            runGradlewCommand('build', 'MARSLib: Build');
+        });
 
-    const deployDisposable = vscode.commands.registerCommand('marslib.deploy', () => {
-        runGradlewCommand('deploy', 'MARSLib: Deploy');
-    });
+        const deployDisposable = vscode.commands.registerCommand('marslib.deploy', () => {
+            runGradlewCommand('deploy', 'MARSLib: Deploy');
+        });
 
-    const simulateDisposable = vscode.commands.registerCommand('marslib.simulate', () => {
-        runGradlewCommand('simulateJava', 'MARSLib: Simulate');
-    });
+        const simulateDisposable = vscode.commands.registerCommand('marslib.simulate', () => {
+            runGradlewCommand('simulateJava', 'MARSLib: Simulate');
+        });
 
-    const generateSubsystemDisposable = vscode.commands.registerCommand('marslib.generateSubsystem', async () => {
-        await generateSubsystem();
-    });
+        const generateSubsystemDisposable = vscode.commands.registerCommand('marslib.generateSubsystem', async () => {
+            await generateSubsystem();
+        });
 
-    const auditDisposable = vscode.commands.registerCommand('marslib.audit', () => {
-        runAudit();
-    });
+        const auditDisposable = vscode.commands.registerCommand('marslib.audit', () => {
+            runAudit();
+        });
 
-    const setupEnvironmentDisposable = vscode.commands.registerCommand('marslib.setupEnvironment', async () => {
-        await setupEnvironment();
-    });
+        const setupEnvironmentDisposable = vscode.commands.registerCommand('marslib.setupEnvironment', async () => {
+            await setupEnvironment();
+        });
 
-    const openLogDisposable = vscode.commands.registerCommand('marslib.openLog', async () => {
-        await openLatestLog();
-    });
+        const openLogDisposable = vscode.commands.registerCommand('marslib.openLog', async () => {
+            await openLatestLog();
+        });
 
-    // Initialize Project Doctor (Real-time Linter)
-    const projectDoctor = new ProjectDoctor();
-    projectDoctor.subscribeToEvents(context);
+        // Initialize Project Doctor (Real-time Linter)
+        try {
+            const projectDoctor = new ProjectDoctor();
+            projectDoctor.subscribeToEvents(context);
+        } catch (e) {
+            console.error('Failed to initialize Project Doctor', e);
+        }
 
-    // Initialize Code Lens Provider
-    const codeLensProvider = new MARSCodeLensProvider();
-    context.subscriptions.push(vscode.languages.registerCodeLensProvider({ language: 'java' }, codeLensProvider));
+        // Initialize Code Lens Provider
+        try {
+            const codeLensProvider = new MARSCodeLensProvider();
+            context.subscriptions.push(vscode.languages.registerCodeLensProvider({ language: 'java' }, codeLensProvider));
+        } catch (e) {
+            console.error('Failed to initialize Code Lens Provider', e);
+        }
 
-    // Initialize CAN ID Manager
-    const canIdManager = new CANIdManager();
-    vscode.window.registerTreeDataProvider('marslib-canids', canIdManager);
-    const refreshCANIdsDisposable = vscode.commands.registerCommand('marslib.refreshCANIds', () => {
-        canIdManager.refresh();
-    });
+        // Initialize CAN ID Manager
+        let refreshCANIdsDisposable: vscode.Disposable | undefined;
+        try {
+            const canIdManager = new CANIdManager();
+            context.subscriptions.push(
+                vscode.window.registerTreeDataProvider('marslib-canids', canIdManager)
+            );
+            refreshCANIdsDisposable = vscode.commands.registerCommand('marslib.refreshCANIds', () => {
+                canIdManager.refresh();
+            });
+        } catch (e) {
+            console.error('Failed to initialize CAN ID Manager', e);
+        }
 
-    // Initialize Power User Suite
-    const statusBar = new MARSStatusBar();
-    context.subscriptions.push(statusBar);
-    
-    const daemon = new BuildConstantsDaemon(context);
+        // Initialize Power User Suite
+        try {
+            const statusBar = new MARSStatusBar();
+            context.subscriptions.push(statusBar);
+        } catch (e) {
+            console.error('Failed to initialize Status Bar', e);
+        }
+        
+        try {
+            const daemon = new BuildConstantsDaemon(context);
+        } catch (e) {
+            console.error('Failed to initialize Daemon', e);
+        }
 
-    const openDashboardDisposable = vscode.commands.registerCommand('marslib.openDashboard', () => {
-        MARSVirtualDashboard.createOrShow(context.extensionUri);
-    });
+        const openDashboardDisposable = vscode.commands.registerCommand('marslib.openDashboard', () => {
+            MARSVirtualDashboard.createOrShow(context.extensionUri);
+        });
 
-    const generateTestDisposable = vscode.commands.registerCommand('marslib.generateTest', async () => {
-        await generatePhysicsTest();
-    });
+        const generateTestDisposable = vscode.commands.registerCommand('marslib.generateTest', async () => {
+            await generatePhysicsTest();
+        });
 
-    const openBinderDisposable = vscode.commands.registerCommand('marslib.openBinder', () => {
-        MARSCommandBinder.createOrShow(context.extensionUri);
-    });
+        const openBinderDisposable = vscode.commands.registerCommand('marslib.openBinder', () => {
+            MARSCommandBinder.createOrShow(context.extensionUri);
+        });
 
-    context.subscriptions.push(
-        buildDisposable,
-        deployDisposable,
-        simulateDisposable,
-        generateSubsystemDisposable,
-        auditDisposable,
-        setupEnvironmentDisposable,
-        openLogDisposable,
-        refreshCANIdsDisposable,
-        openDashboardDisposable,
-        generateTestDisposable,
-        openBinderDisposable
-    );
+        context.subscriptions.push(
+            buildDisposable,
+            deployDisposable,
+            simulateDisposable,
+            generateSubsystemDisposable,
+            auditDisposable,
+            setupEnvironmentDisposable,
+            openLogDisposable,
+            openDashboardDisposable,
+            generateTestDisposable,
+            openBinderDisposable
+        );
+        if (refreshCANIdsDisposable) {
+            context.subscriptions.push(refreshCANIdsDisposable);
+        }
+    } catch (e) {
+        console.error('Critical failure during MARSLib extension activation', e);
+    }
 }
 
 export function deactivate() {}
