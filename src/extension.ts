@@ -35,6 +35,13 @@ function runGradlewCommand(command: string, terminalName: string) {
     terminal.sendText(`${gradlew} ${command}`);
 }
 class MarslibActionProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
+    private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | void> = new vscode.EventEmitter<vscode.TreeItem | undefined | void>();
+    readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | void> = this._onDidChangeTreeData.event;
+
+    refresh(): void {
+        this._onDidChangeTreeData.fire();
+    }
+
     getTreeItem(element: vscode.TreeItem): vscode.TreeItem {
         return element;
     }
@@ -74,9 +81,10 @@ export function activate(context: vscode.ExtensionContext) {
         console.log('MARSLib VS Code extension is now active!');
 
         const actionProvider = new MarslibActionProvider();
-        context.subscriptions.push(
-            vscode.window.registerTreeDataProvider('marslib-actions', actionProvider)
-        );
+        const actionTreeView = vscode.window.createTreeView('marslib-actions', {
+            treeDataProvider: actionProvider
+        });
+        context.subscriptions.push(actionTreeView);
 
         const buildDisposable = vscode.commands.registerCommand('marslib.build', () => {
             runGradlewCommand('build', 'MARSLib: Build');
@@ -126,9 +134,10 @@ export function activate(context: vscode.ExtensionContext) {
         let refreshCANIdsDisposable: vscode.Disposable | undefined;
         try {
             const canIdManager = new CANIdManager();
-            context.subscriptions.push(
-                vscode.window.registerTreeDataProvider('marslib-canids', canIdManager)
-            );
+            const canTree = vscode.window.createTreeView('marslib-canids', {
+                treeDataProvider: canIdManager
+            });
+            context.subscriptions.push(canTree);
             refreshCANIdsDisposable = vscode.commands.registerCommand('marslib.refreshCANIds', () => {
                 canIdManager.refresh();
             });
