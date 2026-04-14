@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="resources/marslib.svg" width="128" alt="MARSLib Logo" />
+  <img src="resources/mars-logo.png" width="250" alt="MARSLib Logo" />
 </p>
 
 # MARSLib VS Code Extension

@@ -2,8 +2,9 @@
   "name": "marslib-vscode",
   "displayName": "MARSLib Extension",
   "description": "Official VS Code extension for the MARSLib robotics framework.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "mars2614",
+  "icon": "resources/mars-logo.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/mars2614/marslib-vscode"
@@ -24,7 +25,7 @@
         {
           "id": "marslib-actions-container",
           "title": "MARSLib",
-          "icon": "resources/marslib.svg"
+          "icon": "resources/mars-logo.png"
         }
       ]
     },
