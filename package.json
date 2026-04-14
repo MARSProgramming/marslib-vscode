@@ -1,23 +1,29 @@
 {
   "name": "marslib-vscode",
   "displayName": "MARSLib Extension",
-  "description": "Official VS Code extension for the MARSLib robotics framework.",
-  "version": "1.2.0",
+  "description": "Official VS Code extension for the MARSLib robotics framework — championship-grade development suite.",
+  "version": "2.0.0",
   "publisher": "mars2614",
   "icon": "resources/mars-logo.png",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mars2614/marslib-vscode"
+    "url": "https://github.com/MARSProgramming/marslib-vscode"
   },
   "engines": {
     "vscode": "^1.80.0"
   },
   "categories": [
+    "Linters",
+    "Snippets",
     "Other"
   ],
+  "keywords": ["frc", "robotics", "wpilib", "advantagekit", "marslib"],
   "activationEvents": [
     "onView:marslib-actions",
     "onView:marslib-canids",
+    "onView:marslib-pathplanner",
+    "onView:marslib-deploy-history",
     "onLanguage:java",
     "onStartupFinished"
   ],
@@ -41,7 +47,17 @@
         },
         {
           "id": "marslib-canids",
-          "name": "MARSLib CAN IDs",
+          "name": "CAN IDs",
+          "type": "tree"
+        },
+        {
+          "id": "marslib-pathplanner",
+          "name": "PathPlanner",
+          "type": "tree"
+        },
+        {
+          "id": "marslib-deploy-history",
+          "name": "Deploy History",
           "type": "tree"
         }
       ]
@@ -49,19 +65,30 @@
     "commands": [
       {
         "command": "marslib.build",
-        "title": "MARSLib: Build Robot Code"
+        "title": "MARSLib: Build Robot Code",
+        "icon": "$(tools)"
       },
       {
         "command": "marslib.deploy",
-        "title": "MARSLib: Deploy Robot Code"
+        "title": "MARSLib: Deploy Robot Code",
+        "icon": "$(rocket)"
       },
       {
         "command": "marslib.simulate",
-        "title": "MARSLib: Simulate Robot Code"
+        "title": "MARSLib: Simulate Robot Code",
+        "icon": "$(play)"
+      },
+      {
+        "command": "marslib.simWithScope",
+        "title": "MARSLib: Sim + AdvantageScope"
+      },
+      {
+        "command": "marslib.toggleSimMode",
+        "title": "MARSLib: Toggle Sim/Deploy Mode"
       },
       {
         "command": "marslib.generateSubsystem",
-        "title": "MARSLib: Generate Subsystem (AdvantageKit)"
+        "title": "MARSLib: Generate Subsystem (Wizard)"
       },
       {
         "command": "marslib.audit",
@@ -81,6 +108,16 @@
         "icon": "$(refresh)"
       },
       {
+        "command": "marslib.refreshPaths",
+        "title": "Refresh PathPlanner",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "marslib.refreshDeployHistory",
+        "title": "Refresh Deploy History",
+        "icon": "$(refresh)"
+      },
+      {
         "command": "marslib.openDashboard",
         "title": "MARSLib: Open Virtual Dashboard"
       },
@@ -91,6 +128,10 @@
       {
         "command": "marslib.openBinder",
         "title": "MARSLib: Open Command Binder"
+      },
+      {
+        "command": "marslib.openCANMap",
+        "title": "MARSLib: Open CAN Bus Map"
       }
     ],
     "menus": {
@@ -98,6 +139,16 @@
         {
           "command": "marslib.refreshCANIds",
           "when": "view == marslib-canids",
+          "group": "navigation"
+        },
+        {
+          "command": "marslib.refreshPaths",
+          "when": "view == marslib-pathplanner",
+          "group": "navigation"
+        },
+        {
+          "command": "marslib.refreshDeployHistory",
+          "when": "view == marslib-deploy-history",
           "group": "navigation"
         }
       ]
@@ -152,17 +203,17 @@
           {
             "id": "generate",
             "title": "Scaffold a Subsystem",
-            "description": "Use the MARSLib Generator to create your first AdvantageKit-ready mechanism with IO layers.",
+            "description": "Use the MARSLib Wizard to create your first AdvantageKit-ready mechanism with IO layers, motor-specific code, and optional SysId.",
             "button": {
               "command": "marslib.generateSubsystem"
             }
           },
           {
             "id": "canids",
-            "title": "Review CAN IDs",
-            "description": "Open the MARSLib CAN ID Manager in the sidebar to visualize your hardware mapping and detect conflicts.",
+            "title": "Review CAN Bus Topology",
+            "description": "Open the MARSLib CAN Bus Map to visualize your hardware wiring and detect ID conflicts before they brick your robot.",
             "button": {
-              "command": "workbench.view.extension.marslib-actions-container"
+              "command": "marslib.openCANMap"
             }
           }
         ]
