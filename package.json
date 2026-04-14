@@ -42,13 +42,6 @@
           "title": "MARSLib",
           "icon": "resources/marslib.svg"
         }
-      ],
-      "panel": [
-        {
-          "id": "marslib-panel",
-          "title": "MARSLib Data",
-          "icon": "resources/marslib.svg"
-        }
       ]
     },
     "views": {
@@ -57,9 +50,7 @@
           "id": "marslib-actions",
           "name": "Commands",
           "type": "tree"
-        }
-      ],
-      "marslib-panel": [
+        },
         {
           "id": "marslib-canids",
           "name": "CAN IDs",
