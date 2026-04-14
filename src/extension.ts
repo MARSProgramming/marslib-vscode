@@ -2,6 +2,10 @@ import * as vscode from 'vscode';
 import { generateSubsystem } from './subsystemGenerator';
 import { runAudit } from './auditRunner';
 import { setupEnvironment } from './environmentSetup';
+import { ProjectDoctor } from './projectDoctor';
+import { MARSCodeLensProvider } from './codeLensProvider';
+import { CANIdManager } from './canIdManager';
+import { openLatestLog } from './logLauncher';
 
 // Helper to run gradlew commands in a VS Code terminal
 function runGradlewCommand(command: string, terminalName: string) {
@@ -40,7 +44,8 @@ class MarslibActionProvider implements vscode.TreeDataProvider<vscode.TreeItem> 
                 this.createCommandItem('Simulate Robot Code', 'marslib.simulate', 'play'),
                 this.createCommandItem('Generate Subsystem (AdvantageKit)', 'marslib.generateSubsystem', 'file-add'),
                 this.createCommandItem('Run MARSLib Audit', 'marslib.audit', 'check-all'),
-                this.createCommandItem('Setup Development Environment', 'marslib.setupEnvironment', 'settings-gear')
+                this.createCommandItem('Setup Development Environment', 'marslib.setupEnvironment', 'settings-gear'),
+                this.createCommandItem('Open Latest Log (AdvantageScope)', 'marslib.openLog', 'graph')
             ]);
         }
     }
@@ -86,13 +91,34 @@ export function activate(context: vscode.ExtensionContext) {
         await setupEnvironment();
     });
 
+    const openLogDisposable = vscode.commands.registerCommand('marslib.openLog', async () => {
+        await openLatestLog();
+    });
+
+    // Initialize Project Doctor (Real-time Linter)
+    const projectDoctor = new ProjectDoctor();
+    projectDoctor.subscribeToEvents(context);
+
+    // Initialize Code Lens Provider
+    const codeLensProvider = new MARSCodeLensProvider();
+    context.subscriptions.push(vscode.languages.registerCodeLensProvider({ language: 'java' }, codeLensProvider));
+
+    // Initialize CAN ID Manager
+    const canIdManager = new CANIdManager();
+    vscode.window.registerTreeDataProvider('marslib-canids', canIdManager);
+    const refreshCANIdsDisposable = vscode.commands.registerCommand('marslib.refreshCANIds', () => {
+        canIdManager.refresh();
+    });
+
     context.subscriptions.push(
         buildDisposable,
         deployDisposable,
         simulateDisposable,
         generateSubsystemDisposable,
         auditDisposable,
-        setupEnvironmentDisposable
+        setupEnvironmentDisposable,
+        openLogDisposable,
+        refreshCANIdsDisposable
     );
 }
 

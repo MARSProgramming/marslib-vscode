@@ -2,7 +2,7 @@
   "name": "marslib-vscode",
   "displayName": "MARSLib Extension",
   "description": "Official VS Code extension for the MARSLib robotics framework.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "publisher": "mars2614",
   "icon": "resources/mars-logo.png",
   "repository": {
@@ -16,7 +16,9 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:marslib-actions"
+    "onView:marslib-actions",
+    "onView:marslib-canids",
+    "onLanguage:java"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -34,6 +36,11 @@
         {
           "id": "marslib-actions",
           "name": "Commands",
+          "type": "tree"
+        },
+        {
+          "id": "marslib-canids",
+          "name": "MARSLib CAN IDs",
           "type": "tree"
         }
       ]
@@ -62,6 +69,70 @@
       {
         "command": "marslib.setupEnvironment",
         "title": "MARSLib: Setup Development Environment"
+      },
+      {
+        "command": "marslib.openLog",
+        "title": "MARSLib: Open Latest Log in AdvantageScope"
+      },
+      {
+        "command": "marslib.refreshCANIds",
+        "title": "Refresh CAN IDs",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "marslib.refreshCANIds",
+          "when": "view == marslib-canids",
+          "group": "navigation"
+        }
+      ]
+    },
+    "snippets": [
+      {
+        "language": "java",
+        "path": "./snippets/marslib.code-snippets"
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "marslib.welcome",
+        "title": "Welcome to MARSLib",
+        "description": "Getting started with championship-grade robotics development.",
+        "steps": [
+          {
+            "id": "setup",
+            "title": "Initialize Environment",
+            "description": "Download core FRC libraries and configure your git hooks. This ensures your project follows the Elite Coding Standards.",
+            "media": {
+              "svg": "resources/marslib.svg",
+              "altText": "MARSLib Logo"
+            },
+            "completionEvents": [
+              "onCommand:marslib.setupEnvironment"
+            ],
+            "button": {
+              "command": "marslib.setupEnvironment"
+            }
+          },
+          {
+            "id": "generate",
+            "title": "Scaffold a Subsystem",
+            "description": "Use the MARSLib Generator to create your first AdvantageKit-ready mechanism with IO layers.",
+            "button": {
+              "command": "marslib.generateSubsystem"
+            }
+          },
+          {
+            "id": "canids",
+            "title": "Review CAN IDs",
+            "description": "Open the MARSLib CAN ID Manager in the sidebar to visualize your hardware mapping and detect conflicts.",
+            "button": {
+              "command": "workbench.view.extension.marslib-actions-container"
+            }
+          }
+        ]
       }
     ]
   },
