@@ -2,7 +2,7 @@
   "name": "marslib-vscode",
   "displayName": "MARSLib Extension",
   "description": "Official VS Code extension for the MARSLib robotics framework — championship-grade development suite.",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "publisher": "mars2614",
   "icon": "resources/mars-logo.png",
   "license": "MIT",
@@ -42,6 +42,13 @@
           "title": "MARSLib",
           "icon": "resources/marslib.svg"
         }
+      ],
+      "panel": [
+        {
+          "id": "marslib-panel",
+          "title": "MARSLib Data",
+          "icon": "resources/marslib.svg"
+        }
       ]
     },
     "views": {
@@ -50,7 +57,9 @@
           "id": "marslib-actions",
           "name": "Commands",
           "type": "tree"
-        },
+        }
+      ],
+      "marslib-panel": [
         {
           "id": "marslib-canids",
           "name": "CAN IDs",

@@ -41,15 +41,6 @@ function runGradlewCommand(command: string, terminalName: string) {
     terminal.sendText(`${gradlew} ${command}`);
 }
 
-class ActionGroupItem extends vscode.TreeItem {
-    constructor(
-        public readonly label: string,
-        public readonly children: vscode.TreeItem[]
-    ) {
-        super(label, vscode.TreeItemCollapsibleState.Expanded);
-    }
-}
-
 class MarslibActionProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     private _onDidChangeTreeData = new vscode.EventEmitter<vscode.TreeItem | undefined | void>();
     readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
@@ -65,37 +56,26 @@ class MarslibActionProvider implements vscode.TreeDataProvider<vscode.TreeItem> 
     }
 
     getChildren(element?: vscode.TreeItem): Thenable<vscode.TreeItem[]> {
-        if (element instanceof ActionGroupItem) {
-            return Promise.resolve(element.children);
-        } else if (element) {
+        if (element) {
             return Promise.resolve([]);
         }
 
-        const buildGroup = new ActionGroupItem('Build & Deploy', [
+        const items = [
             this.createCommandItem('Build Robot Code', 'marslib.build', 'tools'),
-            this.createCommandItem('Deploy Robot Code', 'marslib.deploy', 'rocket')
-        ]);
-
-        const simGroup = new ActionGroupItem('Simulation & Testing', [
+            this.createCommandItem('Deploy Robot Code', 'marslib.deploy', 'rocket'),
             this.createCommandItem('Simulate Robot Code', 'marslib.simulate', 'play'),
             this.createCommandItem('Sim + AdvantageScope', 'marslib.simWithScope', 'play-circle'),
-            this.createCommandItem('Generate Physics Test', 'marslib.generateTest', 'beaker')
-        ]);
-
-        const devGroup = new ActionGroupItem('Development Tools', [
             this.createCommandItem('Generate Subsystem (Wizard)', 'marslib.generateSubsystem', 'file-add'),
+            this.createCommandItem('Generate Physics Test', 'marslib.generateTest', 'beaker'),
             this.createCommandItem('Run MARSLib Audit', 'marslib.audit', 'check-all'),
-            this.createCommandItem('Setup Development Environment', 'marslib.setupEnvironment', 'settings-gear')
-        ]);
-
-        const dashboardGroup = new ActionGroupItem('Dashboards & UI', [
-            this.createCommandItem('Open Latest Log', 'marslib.openLog', 'graph'),
+            this.createCommandItem('Setup Development Environment', 'marslib.setupEnvironment', 'settings-gear'),
+            this.createCommandItem('Open Latest Log (AdvantageScope)', 'marslib.openLog', 'graph'),
             this.createCommandItem('Open Virtual Dashboard', 'marslib.openDashboard', 'dashboard'),
             this.createCommandItem('Open CAN Bus Map', 'marslib.openCANMap', 'circuit-board'),
-            this.createCommandItem('Open Command Binder', 'marslib.openBinder', 'list-ordered')
-        ]);
+            this.createCommandItem('Open Command Binder', 'marslib.openBinder', 'list-ordered'),
+        ];
 
-        return Promise.resolve([buildGroup, simGroup, devGroup, dashboardGroup]);
+        return Promise.resolve(items.filter(Boolean) as vscode.TreeItem[]);
     }
 
     private createCommandItem(label: string, commandId: string, icon: string): vscode.TreeItem {
