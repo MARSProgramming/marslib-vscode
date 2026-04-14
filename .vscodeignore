@@ -5,6 +5,10 @@ src/**
 .gitignore
 .yarnrc
 tsconfig.json
+esbuild.js
 vsc-extension-quickstart.md
+mock_run.js
+mock_run2.js
 **/*.map
 **/*.ts
+!out/extension.js

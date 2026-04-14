@@ -8,9 +8,13 @@ import { CANIdManager } from './canIdManager';
 import { openLatestLog } from './logLauncher';
 import { MARSStatusBar } from './statusBar';
 import { BuildConstantsDaemon } from './daemon';
-import { MARSVirtualDashboard } from './virtualDashboard';
 import { generatePhysicsTest } from './testGenerator';
-import { MARSCommandBinder } from './commandBinder';
+
+// These modules are lazy-loaded inside command handlers to avoid crashing
+// activation if ntcore-ts-client or other bundled deps are missing.
+// See: virtualDashboard requires ntcore-ts-client at module scope.
+type LazyVirtualDashboard = typeof import('./virtualDashboard');
+type LazyCommandBinder = typeof import('./commandBinder');
 
 // Helper to run gradlew commands in a VS Code terminal
 function runGradlewCommand(command: string, terminalName: string) {
@@ -160,7 +164,13 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const openDashboardDisposable = vscode.commands.registerCommand('marslib.openDashboard', () => {
-            MARSVirtualDashboard.createOrShow(context.extensionUri);
+            try {
+                const { MARSVirtualDashboard } = require('./virtualDashboard') as LazyVirtualDashboard;
+                MARSVirtualDashboard.createOrShow(context.extensionUri);
+            } catch (e) {
+                vscode.window.showErrorMessage('Failed to open Virtual Dashboard. ntcore-ts-client may not be bundled.');
+                console.error('Dashboard load error:', e);
+            }
         });
 
         const generateTestDisposable = vscode.commands.registerCommand('marslib.generateTest', async () => {
@@ -168,7 +178,13 @@ export function activate(context: vscode.ExtensionContext) {
         });
 
         const openBinderDisposable = vscode.commands.registerCommand('marslib.openBinder', () => {
-            MARSCommandBinder.createOrShow(context.extensionUri);
+            try {
+                const { MARSCommandBinder } = require('./commandBinder') as LazyCommandBinder;
+                MARSCommandBinder.createOrShow(context.extensionUri);
+            } catch (e) {
+                vscode.window.showErrorMessage('Failed to open Command Binder.');
+                console.error('Command Binder load error:', e);
+            }
         });
 
         context.subscriptions.push(
