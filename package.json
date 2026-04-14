@@ -2,7 +2,7 @@
   "name": "marslib-vscode",
   "displayName": "MARSLib Extension",
   "description": "Official VS Code extension for the MARSLib robotics framework — championship-grade development suite.",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "publisher": "mars2614",
   "icon": "resources/mars-logo.png",
   "license": "MIT",
@@ -18,7 +18,13 @@
     "Snippets",
     "Other"
   ],
-  "keywords": ["frc", "robotics", "wpilib", "advantagekit", "marslib"],
+  "keywords": [
+    "frc",
+    "robotics",
+    "wpilib",
+    "advantagekit",
+    "marslib"
+  ],
   "activationEvents": [
     "onView:marslib-actions",
     "onView:marslib-canids",
