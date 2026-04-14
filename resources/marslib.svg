@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Body -->
+  <rect x="8" y="16" width="8" height="8" />
+  <!-- Neck -->
+  <line x1="12" y1="14" x2="12" y2="16" stroke-width="2"/>
+  <!-- Head -->
+  <rect x="6" y="5" width="12" height="9" rx="1" />
+  <!-- Eyes -->
+  <circle cx="9.5" cy="9.5" r="1.2" fill="currentColor" stroke="none" />
+  <circle cx="14.5" cy="9.5" r="1.2" fill="currentColor" stroke="none" />
+  <!-- Angry Brows -->
+  <path d="M8 8 l1.5 -1.5 l2.5 1.5 l2.5 -1.5 l1.5 1.5" />
+  <!-- Left Arm -->
+  <path d="M8 18 H4 V10" />
+  <!-- Left Claw -->
+  <path d="M2 8 V10 H6 V8" />
+  <!-- Right Arm -->
+  <path d="M16 18 H20 V10" />
+  <!-- Right Claw -->
+  <path d="M18 8 V10 H22 V8" />
+</svg>
