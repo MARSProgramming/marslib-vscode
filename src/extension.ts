@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { generateSubsystem } from './subsystemGenerator';
 import { runAudit } from './auditRunner';
+import { setupEnvironment } from './environmentSetup';
 
 // Helper to run gradlew commands in a VS Code terminal
 function runGradlewCommand(command: string, terminalName: string) {
@@ -38,7 +39,8 @@ class MarslibActionProvider implements vscode.TreeDataProvider<vscode.TreeItem> 
                 this.createCommandItem('Deploy Robot Code', 'marslib.deploy', 'rocket'),
                 this.createCommandItem('Simulate Robot Code', 'marslib.simulate', 'play'),
                 this.createCommandItem('Generate Subsystem (AdvantageKit)', 'marslib.generateSubsystem', 'file-add'),
-                this.createCommandItem('Run MARSLib Audit', 'marslib.audit', 'check-all')
+                this.createCommandItem('Run MARSLib Audit', 'marslib.audit', 'check-all'),
+                this.createCommandItem('Setup Development Environment', 'marslib.setupEnvironment', 'settings-gear')
             ]);
         }
     }
@@ -80,12 +82,17 @@ export function activate(context: vscode.ExtensionContext) {
         runAudit();
     });
 
+    const setupEnvironmentDisposable = vscode.commands.registerCommand('marslib.setupEnvironment', async () => {
+        await setupEnvironment();
+    });
+
     context.subscriptions.push(
         buildDisposable,
         deployDisposable,
         simulateDisposable,
         generateSubsystemDisposable,
-        auditDisposable
+        auditDisposable,
+        setupEnvironmentDisposable
     );
 }
 

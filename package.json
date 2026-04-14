@@ -2,7 +2,7 @@
   "name": "marslib-vscode",
   "displayName": "MARSLib Extension",
   "description": "Official VS Code extension for the MARSLib robotics framework.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "publisher": "mars2614",
   "icon": "resources/mars-logo.png",
   "repository": {
@@ -58,6 +58,10 @@
       {
         "command": "marslib.audit",
         "title": "MARSLib: Run Audit"
+      },
+      {
+        "command": "marslib.setupEnvironment",
+        "title": "MARSLib: Setup Development Environment"
       }
     ]
   },
