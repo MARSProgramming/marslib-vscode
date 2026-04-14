@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARSLib Virtual Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mars-orange: #FF6B00;
+            --mars-dark: #0A0A0B;
+            --mars-card: #151518;
+            --mars-text: #E0E0E0;
+            --status-ok: #00FF94;
+            --status-warn: #FFB800;
+            --status-error: #FF3B3B;
+        }
+
+        body {
+            background-color: var(--mars-dark);
+            color: var(--mars-text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--mars-orange);
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 2px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--mars-card);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 107, 0, 0.1);
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 107, 0, 0.3);
+        }
+
+        .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .unit {
+            font-size: 0.9rem;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--status-ok);
+            display: inline-block;
+            margin-right: 8px;
+            box-shadow: 0 0 10px var(--status-ok);
+        }
+
+        .pose-info {
+            grid-column: span 2;
+        }
+
+        .pose-grid {
+            display: flex;
+            gap: 20px;
+        }
+
+        .connection-banner {
+            background: rgba(255, 107, 0, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-banner">
+        <span><span id="conn-dot" class="status-dot"></span> <span id="conn-text">Connecting to NT...</span></span>
+        <span id="server-addr">RIO IP: 10.26.14.2</span>
+    </div>
+
+    <h1>🚀 MARSLIB TELEMETRY</h1>
+
+    <div class="grid">
+        <div class="card">
+            <div class="label">Battery Voltage</div>
+            <div class="value" id="val-battery">--.- <span class="unit">V</span></div>
+        </div>
+        <div class="card">
+            <div class="label">Match Time</div>
+            <div class="value" id="val-time">--- <span class="unit">s</span></div>
+        </div>
+        <div class="card pose-info">
+            <div class="label">Robot Pose (Odometry)</div>
+            <div class="pose-grid">
+                <div>
+                    <div style="font-size: 0.6rem; color: #666;">X</div>
+                    <div class="value" style="font-size: 1.2rem;" id="val-pose-x">0.00</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.6rem; color: #666;">Y</div>
+                    <div class="value" style="font-size: 1.2rem;" id="val-pose-y">0.00</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.6rem; color: #666;">Heading</div>
+                    <div class="value" style="font-size: 1.2rem;" id="val-pose-omega">0.0°</div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="label">Swerve Mode</div>
+            <div class="value" id="val-mode" style="font-size: 1.2rem; color: var(--mars-orange);">IDLE</div>
+        </div>
+        <div class="card">
+            <div class="label">Faults Active</div>
+            <div class="value" id="val-faults" style="color: var(--status-ok);">0</div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('message', event => {
+            const data = event.data;
+            if (data.type === 'update') {
+                updateValue('val-battery', data.values.battery?.toFixed(1) || '--.-');
+                updateValue('val-time', Math.floor(data.values.time) || '---');
+                updateValue('val-pose-x', data.values.poseX?.toFixed(2) || '0.00');
+                updateValue('val-pose-y', data.values.poseY?.toFixed(2) || '0.00');
+                updateValue('val-pose-omega', (data.values.poseRot?.toFixed(1) || '0.0') + '°');
+                updateValue('val-mode', data.values.mode || 'IDLE');
+                
+                const faultCount = data.values.faults || 0;
+                const faultEl = document.getElementById('val-faults');
+                faultEl.innerText = faultCount;
+                faultEl.style.color = faultCount > 0 ? 'var(--status-error)' : 'var(--status-ok)';
+            } else if (data.type === 'status') {
+                document.getElementById('conn-text').innerText = data.connected ? 'Connected to NT' : 'Connecting...';
+                document.getElementById('conn-dot').style.background = data.connected ? 'var(--status-ok)' : 'var(--status-warn)';
+                document.getElementById('conn-dot').style.boxShadow = data.connected ? '0 0 10px var(--status-ok)' : '0 0 10px var(--status-warn)';
+                document.getElementById('server-addr').innerText = 'NT Server: ' + data.address;
+            }
+        });
+
+        function updateValue(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = val + (el.querySelector('.unit')?.outerHTML || '');
+        }
+    </script>
+</body>
+</html>

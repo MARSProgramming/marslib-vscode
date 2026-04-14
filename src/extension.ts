@@ -6,6 +6,11 @@ import { ProjectDoctor } from './projectDoctor';
 import { MARSCodeLensProvider } from './codeLensProvider';
 import { CANIdManager } from './canIdManager';
 import { openLatestLog } from './logLauncher';
+import { MARSStatusBar } from './statusBar';
+import { BuildConstantsDaemon } from './daemon';
+import { MARSVirtualDashboard } from './virtualDashboard';
+import { generatePhysicsTest } from './testGenerator';
+import { MARSCommandBinder } from './commandBinder';
 
 // Helper to run gradlew commands in a VS Code terminal
 function runGradlewCommand(command: string, terminalName: string) {
@@ -45,7 +50,10 @@ class MarslibActionProvider implements vscode.TreeDataProvider<vscode.TreeItem> 
                 this.createCommandItem('Generate Subsystem (AdvantageKit)', 'marslib.generateSubsystem', 'file-add'),
                 this.createCommandItem('Run MARSLib Audit', 'marslib.audit', 'check-all'),
                 this.createCommandItem('Setup Development Environment', 'marslib.setupEnvironment', 'settings-gear'),
-                this.createCommandItem('Open Latest Log (AdvantageScope)', 'marslib.openLog', 'graph')
+                this.createCommandItem('Open Latest Log (AdvantageScope)', 'marslib.openLog', 'graph'),
+                this.createCommandItem('Open Virtual Dashboard', 'marslib.openDashboard', 'dashboard'),
+                this.createCommandItem('Generate Physics Test', 'marslib.generateTest', 'beaker'),
+                this.createCommandItem('Open Command Binder', 'marslib.openBinder', 'list-ordered')
             ]);
         }
     }
@@ -110,6 +118,24 @@ export function activate(context: vscode.ExtensionContext) {
         canIdManager.refresh();
     });
 
+    // Initialize Power User Suite
+    const statusBar = new MARSStatusBar();
+    context.subscriptions.push(statusBar);
+    
+    const daemon = new BuildConstantsDaemon(context);
+
+    const openDashboardDisposable = vscode.commands.registerCommand('marslib.openDashboard', () => {
+        MARSVirtualDashboard.createOrShow(context.extensionUri);
+    });
+
+    const generateTestDisposable = vscode.commands.registerCommand('marslib.generateTest', async () => {
+        await generatePhysicsTest();
+    });
+
+    const openBinderDisposable = vscode.commands.registerCommand('marslib.openBinder', () => {
+        MARSCommandBinder.createOrShow(context.extensionUri);
+    });
+
     context.subscriptions.push(
         buildDisposable,
         deployDisposable,
@@ -118,7 +144,10 @@ export function activate(context: vscode.ExtensionContext) {
         auditDisposable,
         setupEnvironmentDisposable,
         openLogDisposable,
-        refreshCANIdsDisposable
+        refreshCANIdsDisposable,
+        openDashboardDisposable,
+        generateTestDisposable,
+        openBinderDisposable
     );
 }
 
