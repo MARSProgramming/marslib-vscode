@@ -227,23 +227,18 @@ export class ProjectDoctor {
         }
 
         // Rule 9: Missing @AutoLog in IO Inputs classes
-        if (document.fileName.toLowerCase().includes('io') || document.fileName.toLowerCase().includes('inputs')) {
-            if (occurrenceCount(text, 'class') > 0 && occurrenceCount(text, 'Inputs') > 0 && !text.includes('@AutoLog')) {
-                const classMatch = text.match(/class\s+\w*Inputs/);
-                let range = new vscode.Range(0, 0, 0, 0);
-                if (classMatch) {
-                    const pos = document.positionAt(text.indexOf(classMatch[0]));
-                    range = new vscode.Range(pos.line, 0, pos.line, classMatch[0].length);
-                }
-                const diagnostic = new vscode.Diagnostic(
-                    range,
-                    'Missing @AutoLog: IO Inputs classes must be annotated with @AutoLog for AdvantageKit telemetry.',
-                    vscode.DiagnosticSeverity.Warning
-                );
-                diagnostic.code = 'MARSLIB_MISSING_AUTOLOG';
-                diagnostic.source = 'marslib-doctor';
-                diagnostics.push(diagnostic);
-            }
+        const classMatch = text.match(/class\s+\w*Inputs\b/);
+        if (classMatch && !text.includes('@AutoLog')) {
+            const pos = document.positionAt(text.indexOf(classMatch[0]));
+            const range = new vscode.Range(pos.line, 0, pos.line, classMatch[0].length);
+            const diagnostic = new vscode.Diagnostic(
+                range,
+                'Missing @AutoLog: IO Inputs classes must be annotated with @AutoLog for AdvantageKit telemetry.',
+                vscode.DiagnosticSeverity.Warning
+            );
+            diagnostic.code = 'MARSLIB_MISSING_AUTOLOG';
+            diagnostic.source = 'marslib-doctor';
+            diagnostics.push(diagnostic);
         }
 
         this.diagnosticCollection.set(document.uri, diagnostics);
