@@ -30,16 +30,12 @@ const VENDORDEPS = [
         url: 'https://maven.photonvision.org/repository/internal/org/photonvision/photonlib-json/1.0/photonlib-json-1.0.json'
     },
     {
-        name: 'LimelightLib',
-        url: 'https://limelightvision.github.io/limelightlib-wpijava/LimelightLib.json'
-    },
-    {
         name: 'maple-sim',
         url: 'https://shenzhen-robotics-alliance.github.io/maple-sim/vendordep/maple-sim.json'
     },
     {
         name: 'QuestNav',
-        url: 'https://questnav.gg/QuestNav.json'
+        url: 'https://github.com/QuestNav/QuestNav/releases/download/2026-2.2.0/questnavlib.json'
     }
 ];
 
