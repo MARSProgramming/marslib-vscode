@@ -45,8 +45,8 @@ export class ProjectDoctor {
             const line = document.lineAt(lineIndex);
             const lineText = line.text;
 
-            // Track hot loop entry (periodic, execute methods)
-            if (/\bpublic\s+void\s+(periodic|execute)\s*\(/.test(lineText)) {
+            // Track hot loop entry (periodic, execute, updateInputs methods)
+            if (/\bpublic\s+void\s+(periodic|execute|updateInputs)\s*\(/.test(lineText)) {
                 insideHotLoop = true;
                 hotLoopBraceStart = braceDepth;
             }
@@ -143,6 +143,20 @@ export class ProjectDoctor {
                         vscode.DiagnosticSeverity.Error
                     );
                     diagnostic.code = 'MARSLIB_ALLOCATION_IN_LOOP';
+                    diagnostic.source = 'marslib-doctor';
+                    diagnostics.push(diagnostic);
+                }
+
+                // Rule 10: getInstance() inside hot loops
+                if (lineText.includes('.getInstance()')) {
+                    const start = lineText.indexOf('.getInstance()');
+                    const range = new vscode.Range(lineIndex, start, lineIndex, start + 14);
+                    const diagnostic = new vscode.Diagnostic(
+                        range,
+                        'Elite Standard Violation: Calling getInstance() or synchronized methods inside a hot loop causes lock contention. Cache the reference in the constructor.',
+                        vscode.DiagnosticSeverity.Error
+                    );
+                    diagnostic.code = 'MARSLIB_SYNC_CONTENTION';
                     diagnostic.source = 'marslib-doctor';
                     diagnostics.push(diagnostic);
                 }

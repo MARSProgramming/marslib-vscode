@@ -26,10 +26,6 @@
     "marslib"
   ],
   "activationEvents": [
-    "onView:marslib-actions",
-    "onView:marslib-canids",
-    "onView:marslib-pathplanner",
-    "onView:marslib-deploy-history",
     "onLanguage:java",
     "onStartupFinished"
   ],
@@ -86,19 +82,23 @@
       },
       {
         "command": "marslib.simWithScope",
-        "title": "MARSLib: Sim + AdvantageScope"
+        "title": "MARSLib: Sim + AdvantageScope",
+        "icon": "$(graph)"
       },
       {
         "command": "marslib.toggleSimMode",
-        "title": "MARSLib: Toggle Sim/Deploy Mode"
+        "title": "MARSLib: Toggle Sim/Deploy Mode",
+        "icon": "$(arrow-swap)"
       },
       {
         "command": "marslib.generateSubsystem",
-        "title": "MARSLib: Generate Subsystem (Wizard)"
+        "title": "MARSLib: Generate Subsystem (Wizard)",
+        "icon": "$(gear)"
       },
       {
         "command": "marslib.audit",
-        "title": "MARSLib: Run Audit"
+        "title": "MARSLib: Run Audit",
+        "icon": "$(check-all)"
       },
       {
         "command": "marslib.setupEnvironment",
@@ -199,32 +199,31 @@
           {
             "id": "setup",
             "title": "Initialize Environment",
-            "description": "Download core FRC libraries and configure your git hooks. This ensures your project follows the Elite Coding Standards.",
+            "description": "Download core FRC libraries and configure your git hooks. This ensures your project follows the Elite Coding Standards.\n[Initialize Environment](command:marslib.setupEnvironment)",
             "media": {
               "svg": "resources/marslib.svg",
               "altText": "MARSLib Logo"
             },
             "completionEvents": [
               "onCommand:marslib.setupEnvironment"
-            ],
-            "button": {
-              "command": "marslib.setupEnvironment"
-            }
+            ]
           },
           {
             "id": "generate",
             "title": "Scaffold a Subsystem",
-            "description": "Use the MARSLib Wizard to create your first AdvantageKit-ready mechanism with IO layers, motor-specific code, and optional SysId.",
-            "button": {
-              "command": "marslib.generateSubsystem"
+            "description": "Use the MARSLib Wizard to create your first AdvantageKit-ready mechanism with IO layers, motor-specific code, and optional SysId.\n[Generate Subsystem](command:marslib.generateSubsystem)",
+            "media": {
+              "svg": "resources/marslib.svg",
+              "altText": "Wizard"
             }
           },
           {
             "id": "canids",
             "title": "Review CAN Bus Topology",
-            "description": "Open the MARSLib CAN Bus Map to visualize your hardware wiring and detect ID conflicts before they brick your robot.",
-            "button": {
-              "command": "marslib.openCANMap"
+            "description": "Open the MARSLib CAN Bus Map to visualize your hardware wiring and detect ID conflicts before they brick your robot.\n[Open CAN Map](command:marslib.openCANMap)",
+            "media": {
+              "svg": "resources/marslib.svg",
+              "altText": "CAN Map"
             }
           }
         ]
