@@ -69,6 +69,7 @@ class MarslibActionProvider implements vscode.TreeDataProvider<vscode.TreeItem> 
             this.createCommandItem('Generate Physics Test', 'marslib.generateTest', 'beaker'),
             this.createCommandItem('Run MARSLib Audit', 'marslib.audit', 'check-all'),
             this.createCommandItem('Setup Development Environment', 'marslib.setupEnvironment', 'settings-gear'),
+            this.createCommandItem('Start Auto Log Puller', 'marslib.startLogPuller', 'cloud-download'),
             this.createCommandItem('Open Latest Log (AdvantageScope)', 'marslib.openLog', 'graph'),
             this.createCommandItem('Open Virtual Dashboard', 'marslib.openDashboard', 'dashboard'),
             this.createCommandItem('Open CAN Bus Map', 'marslib.openCANMap', 'circuit-board'),
@@ -221,6 +222,35 @@ export function activate(context: vscode.ExtensionContext) {
 
             vscode.commands.registerCommand('marslib.openLog', async () => {
                 await openLatestLog();
+            }),
+
+            vscode.commands.registerCommand('marslib.startLogPuller', () => {
+                if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0) {
+                    vscode.window.showErrorMessage('No workspace folder open. Open the MARSLib robot project first.');
+                    return;
+                }
+
+                const config = vscode.workspace.getConfiguration('marslib');
+                const overrideIp = config.get<string>('rioAddress');
+                let targetAddress = overrideIp;
+                if (!targetAddress) {
+                    const teamNum = config.get<number>('teamNumber', 2614);
+                    targetAddress = `roborio-${teamNum}-frc.local`;
+                }
+
+                const terminalName = 'MARSLib: Log Puller';
+                let terminal = vscode.window.terminals.find(t => t.name === terminalName);
+                if (!terminal) {
+                    terminal = vscode.window.createTerminal({ 
+                        name: terminalName, 
+                        cwd: vscode.workspace.workspaceFolders[0].uri.fsPath 
+                    });
+                }
+                
+                terminal.show();
+                const isWindows = process.platform === 'win32';
+                const prefix = isWindows ? '.\\' : './';
+                terminal.sendText(`${prefix}tools\\pull-logs.ps1 -RoboRioIp "${targetAddress}"`);
             }),
 
             vscode.commands.registerCommand('marslib.openDashboard', () => {

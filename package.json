@@ -2,7 +2,7 @@
   "name": "marslib-vscode",
   "displayName": "MARSLib Extension",
   "description": "Official VS Code extension for the MARSLib robotics framework — championship-grade development suite.",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "publisher": "mars2614",
   "icon": "resources/mars-logo.png",
   "license": "MIT",
@@ -107,6 +107,11 @@
       {
         "command": "marslib.openLog",
         "title": "MARSLib: Open Latest Log in AdvantageScope"
+      },
+      {
+        "command": "marslib.startLogPuller",
+        "title": "MARSLib: Start Auto Log Puller",
+        "icon": "$(cloud-download)"
       },
       {
         "command": "marslib.refreshCANIds",
